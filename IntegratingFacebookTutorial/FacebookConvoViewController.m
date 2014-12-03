@@ -9,6 +9,8 @@
 #import "FacebookConvoViewController.h"
 #import "PTSMessagingCell.h"
 #import "STBubbleTableViewCell.h"
+#import "UIColor+JSQMessages.h"
+#import "UIImage+JSQMessages.h"
 
 @interface FacebookConvoViewController ()
 
@@ -20,10 +22,10 @@
 
 @synthesize messageInfo;
 @synthesize comments;
+@synthesize conversant;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    comments = [messageInfo ]
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,7 +50,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return comments.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -72,7 +74,7 @@
 //---returns the height for the table view row---
 - (CGFloat)tableView:(UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CGSize messageSize = [PTSMessagingCell messageSize:[listOfMessages objectAtIndex:indexPath.row]];
+    CGSize messageSize = [PTSMessagingCell messageSize:[[comments objectAtIndex:indexPath.row] objectForKey:@"message"]];
     return messageSize.height + 2*[PTSMessagingCell textMarginVertical] + 40.0f;
 }
 
@@ -92,7 +94,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)tappedImageOfCell:(STBubbleTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *message = [listOfMessages objectAtIndex:indexPath.row];
+    NSString *message = [[comments objectAtIndex:indexPath.row] objectForKey:@"message"];
     NSLog(@"%@", message);
 }
 
@@ -106,8 +108,14 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 -(void)configureCell:(id)cell atIndexPath:(NSIndexPath *)indexPath {
     PTSMessagingCell* ccell = (PTSMessagingCell*)cell;
     
-    if ([[typeOfMessages objectAtIndex:indexPath.row] isEqualToString:@"2"]) {
-        NSArray *senderInitials = [sharer componentsSeparatedByString:@" "];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [defaults objectForKey:@"pullPassword"];
+    
+    NSString *senderID = [[[comments objectAtIndex:indexPath.row] objectForKey:@"from"] objectForKey:@"id"];
+    NSString *senderName = [[[comments objectAtIndex:indexPath.row] objectForKey:@"from"] objectForKey:@"name"];
+    
+    if ([userID isEqualToString:senderID]) {
+        NSArray *senderInitials = [senderName componentsSeparatedByString:@" "];
         
         ccell.sent = YES;
         UIImage *withInitials = [[UIImage imageNamed:@"Green_Circle"] jsq_imageMaskedWithColor:[UIColor jsq_messageBubbleGreenColor]];
@@ -122,7 +130,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
         ccell.initialsLabel.textAlignment = NSTextAlignmentCenter;
         ccell.messageLabel.textColor = [UIColor whiteColor];
     } else {
-        NSArray *conversantInitials = [conversant componentsSeparatedByString:@" "];
+        NSArray *conversantInitials = [senderName componentsSeparatedByString:@" "];
         ccell.sent = NO;
         ccell.avatarImageView.image = [[UIImage imageNamed:@"Green_Circle"] jsq_imageMaskedWithColor:[UIColor grayColor]];
         ccell.avatarImageView.contentMode = UIViewContentModeCenter;
@@ -135,8 +143,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
         ccell.initialsLabel.textAlignment = NSTextAlignmentCenter;
     }
     
-    ccell.messageLabel.text = [listOfMessages objectAtIndex:indexPath.row];
-    ccell.timeLabel.text = [dateOfMessages objectAtIndex:indexPath.row];
+    ccell.messageLabel.text = [[comments objectAtIndex:indexPath.row] objectForKey:@"message"];
+    ccell.timeLabel.text = [[comments objectAtIndex:indexPath.row] objectForKey:@"created_time"];
 }
 
 - (CGFloat)heightForText:(NSString *)bodyText
@@ -154,7 +162,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat height=25;
     UILabel * headerLbl=[[UILabel alloc] init];
     headerLbl.frame=CGRectMake(0, 0, width, height);
-    headerLbl.text=[NSString stringWithFormat:@"%@'s Shared\nConversation With %@", sharer, conversant];
+    headerLbl.text=[NSString stringWithFormat:@"Facebook\nConversation With %@", conversant];
     headerLbl.textAlignment=NSTextAlignmentCenter;
     headerLbl.backgroundColor = [UIColor whiteColor];
     headerLbl.lineBreakMode = NSLineBreakByWordWrapping;
@@ -166,7 +174,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 {
     // calculate height of UILabel
     UILabel *lblSectionName = [[UILabel alloc] init];
-    lblSectionName.text = [NSString stringWithFormat:@"%@'s Shared\nConversation With %@", sharer, conversant];
+    lblSectionName.text = [NSString stringWithFormat:@"Facebook\nConversation With %@", conversant];
     lblSectionName.numberOfLines = 0;
     lblSectionName.lineBreakMode = NSLineBreakByWordWrapping;
     

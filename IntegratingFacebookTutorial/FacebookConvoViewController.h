@@ -15,6 +15,8 @@
 
 @property(readwrite) NSDictionary *messageInfo;
 @property(readwrite) NSArray *comments;
+@property(readwrite) NSString *conversant;
+
 
 
 @end

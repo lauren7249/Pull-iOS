@@ -11,6 +11,7 @@
 #import "FacebookTableViewCell.h"
 #import "FacebookConvoViewController.h"
 
+
 @interface YourMessagesViewController ()
 
 @property (weak, nonatomic) IBOutlet UITableView *messagesView;
@@ -77,7 +78,6 @@
     NSDictionary *messageInfo = [currentConvo objectForKey:@"comments"];
     cell.messageInfo = messageInfo;
     
-    
     if([userID isEqualToString:[peopleDictionary objectForKey:@"id"]]){
         peopleDictionary = [people objectAtIndex:1];
     }
@@ -96,6 +96,10 @@
     
     FacebookConvoViewController *fvc = [[FacebookConvoViewController alloc] initWithNibName:@"FacebookConvoViewController" bundle:nil];
     fvc.messageInfo = cell.messageInfo;
+    NSArray *comments = [cell.messageInfo objectForKey:@"data"];
+    fvc.comments = comments;
+    fvc.conversant = cell.textLabel.text;
+    
     [self.navigationController pushViewController:fvc animated:NO];
 }
 
