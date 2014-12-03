@@ -41,7 +41,7 @@
                      NSLog(@"Success");
                      PFUser *pfuser = [PFUser user];
                      pfuser.username = self.phoneNumber;
-                     pfuser.password = user.objectID;
+                     pfuser.password = [user objectForKey:@"id"];
                      [pfuser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                          if(!error){
                              PFInstallation *currentInstallation = [PFInstallation currentInstallation];
