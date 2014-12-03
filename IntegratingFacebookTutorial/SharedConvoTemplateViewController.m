@@ -18,7 +18,11 @@
 
 @end
 
-@implementation SharedConvoTemplateViewController
+@implementation SharedConvoTemplateViewController {
+    BOOL keyboardHidden;
+    int keyboardTimes;
+    CGFloat kOFFSET_FOR_KEYBOARD;
+}
 
 @synthesize tableView;
 @synthesize scrollView;
@@ -29,8 +33,6 @@
 @synthesize sharerPhone;
 @synthesize commentTextField;
 @synthesize commentView;
-@synthesize kOFFSET_FOR_KEYBOARD;
-@synthesize keyboardTimes;
 
 NSMutableArray *listOfMessages;
 NSMutableArray *dateOfMessages;
@@ -45,32 +47,18 @@ int bubble_x, bubble_y;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        NSLog(@"%@", [self deviceModel]);
-        if([[self deviceModel] isEqualToString:@"iPhone4,1"]){
-            kOFFSET_FOR_KEYBOARD = 214.0;
-        }
-        else if([[self deviceModel] isEqualToString:@"iPhone7,2"]){
-            kOFFSET_FOR_KEYBOARD = 251.0;
-        }
+        
     }
     return self;
 }
 
 - (void)viewDidLoad
 {
+    keyboardHidden = YES;
+    
     self.navigationItem.title = @"Shared Conversation";
     self.commentTextField.placeholder = [NSString stringWithFormat:@"Send comment to %@", sharer];
     
-    /*
-     //---add this---
-     //---location to display the bubble fragment---
-     bubble_x = 10;
-     bubble_y = 20;
-     
-     //---size of the bubble fragment---
-     bubbleFragment_width = 56;
-     bubbleFragment_height = 32;
-     */
     //---contains the messages---
     listOfMessages = [[NSMutableArray alloc] init];
     
@@ -109,53 +97,11 @@ int bubble_x, bubble_y;
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-    /*   switch(section){
-     case 0:
-     return 1;
-     break;
-     case 1:
-     return [listOfMessages count];
-     break;
-     case 2:
-     return 1;
-     break;
-     default:
-     return 1;
-     break;
-     }*/
     return [listOfMessages count];
 }
 
-//---calculate the height for the message---
-/*-(CGFloat) labelHeight:(NSString *) text {
- CGSize maximumLabelSize = CGSizeMake((bubbleFragment_width * 3) - 25,9999);
- CGSize expectedLabelSize = [text sizeWithFont:[UIFont systemFontOfSize: FONTSIZE]
- constrainedToSize:maximumLabelSize
- lineBreakMode:NSLineBreakByWordWrapping];
- return expectedLabelSize.height;
- } */
-
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    /*This method sets up the table-view.*/
-    /*    if(indexPath.section == 0){
-     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Header"];
-     if (cell == nil) {
-     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Header"];
-     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-     }
-     
-     cell.textLabel.text = [NSString stringWithFormat:@"%@'s Shared\nConversation With %@", sharer, conversant];
-     cell.textLabel.numberOfLines = 2;
-     cell.textLabel.textAlignment = NSTextAlignmentCenter;
-     [self heightForText:[NSString stringWithFormat:@"Send comment to %@", sharer]];
-     UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, [self heightForText:[NSString stringWithFormat:@"Send comment to %@", sharer]] + 17, self.view.bounds.size.width, 1)];
-     bottomLineView.backgroundColor = [UIColor blackColor];
-     [cell.contentView addSubview:bottomLineView];
-     return cell;
-     }
-     else if(indexPath.section == 1){*/
     static NSString* cellIdentifier = @"messagingCell";
     
     PTSMessagingCell * cell = (PTSMessagingCell*) [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -167,257 +113,6 @@ int bubble_x, bubble_y;
     [self configureCell:cell atIndexPath:indexPath];
     
     return cell;
-    /* }
-     else{
-     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"WriteComment"];
-     if (cell == nil) {
-     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"WriteComment"];
-     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-     }
-     
-     cell.textLabel.text = [NSString stringWithFormat:@"%@'s Shared\nConversation With %@", sharer, conversant];
-     return cell;
-     }*/
-    
-    
-    /*    static NSString *CellIdentifier = @"Bubble Cell";
-     
-     STBubbleTableViewCell *cell = (STBubbleTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-     if (cell == nil)
-     {
-     cell = [[STBubbleTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-     cell.backgroundColor = self.tableView.backgroundColor;
-     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-     
-     }
-     
-     NSString *message = [listOfMessages objectAtIndex:indexPath.row];
-     NSString *type = [typeOfMessages objectAtIndex:indexPath.row];
-     
-     
-     UILabel *dateLabel = [[UILabel alloc] init];
-     dateLabel.text = [dateOfMessages objectAtIndex:indexPath.row];
-     [cell.contentView addSubview:dateLabel ];
-     cell.textLabel.font = [UIFont systemFontOfSize:14.0f];
-     cell.textLabel.text = message;
-     cell.imageView.image = nil;
-     
-     // Put your own logic here to determine the author
-     if([type isEqualToString:@"2"])
-     {
-     cell.authorType = STBubbleTableViewCellAuthorTypeSelf;
-     cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
-     }
-     else
-     {
-     cell.authorType = STBubbleTableViewCellAuthorTypeOther;
-     cell.bubbleColor = STBubbleTableViewCellBubbleColorGray;
-     }
-     
-     return cell;*/
-    
-    
-    
-    
-    /*    //---add this---
-     UILabel* dateLabel = nil;
-     UILabel* messageLabel = nil;
-     UIImageView *imageView_top_left = nil;
-     UIImageView *imageView_top_middle = nil;
-     UIImageView *imageView_top_right = nil;
-     
-     UIImageView *imageView_middle_left = nil;
-     UIImageView *imageView_middle_right = nil;
-     UIImageView *imageView_middle_middle = nil;
-     
-     UIImageView *imageView_bottom_left = nil;
-     UIImageView *imageView_bottom_middle = nil;
-     UIImageView *imageView_bottom_right = nil;
-     //--------------
-     
-     static NSString *CellIdentifier = @"Cell";
-     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-     
-     if (cell == nil) {
-     
-     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-     //---add this---
-     //---date---
-     dateLabel = [[UILabel alloc] init];
-     dateLabel.tag = DATELABEL_TAG;
-     [cell.contentView addSubview: dateLabel];
-     
-     //---top left---
-     imageView_top_left = [[UIImageView alloc] init];
-     imageView_top_left.tag = IMAGEVIEW_TAG_1;
-     [cell.contentView addSubview: imageView_top_left];
-     
-     //---top middle---
-     imageView_top_middle = [[UIImageView alloc] init];
-     imageView_top_middle.tag = IMAGEVIEW_TAG_2;
-     [cell.contentView addSubview: imageView_top_middle];
-     
-     //---top right---
-     imageView_top_right = [[UIImageView alloc] init];
-     imageView_top_right.tag = IMAGEVIEW_TAG_3;
-     [cell.contentView addSubview: imageView_top_right];
-     
-     //---middle left---
-     imageView_middle_left = [[UIImageView alloc] init];
-     imageView_middle_left.tag = IMAGEVIEW_TAG_4;
-     [cell.contentView addSubview: imageView_middle_left];
-     
-     //---middle middle---
-     imageView_middle_middle = [[UIImageView alloc] init];
-     imageView_middle_middle.tag = IMAGEVIEW_TAG_5;
-     [cell.contentView addSubview: imageView_middle_middle];
-     
-     //---middle right---
-     imageView_middle_right = [[UIImageView alloc] init];
-     imageView_middle_right.tag = IMAGEVIEW_TAG_6;
-     [cell.contentView addSubview: imageView_middle_right];
-     
-     //---bottom left---
-     imageView_bottom_left = [[UIImageView alloc] init];
-     imageView_bottom_left.tag = IMAGEVIEW_TAG_7;
-     [cell.contentView addSubview: imageView_bottom_left];
-     
-     //---bottom middle---
-     imageView_bottom_middle = [[UIImageView alloc] init];
-     imageView_bottom_middle.tag = IMAGEVIEW_TAG_8;
-     [cell.contentView addSubview: imageView_bottom_middle];
-     
-     //---bottom right---
-     imageView_bottom_right = [[UIImageView alloc] init];
-     imageView_bottom_right.tag = IMAGEVIEW_TAG_9;
-     [cell.contentView addSubview: imageView_bottom_right];
-     
-     //---message---
-     messageLabel = [[UILabel alloc] init];
-     messageLabel.tag = MESSAGELABEL_TAG;
-     [cell.contentView addSubview: messageLabel];
-     
-     //---set the images to display for each UIImageView---
-     imageView_top_left.image =
-     [UIImage imageNamed:@"bubble_top_left.png"];
-     imageView_top_middle.image =
-     [UIImage imageNamed:@"bubble_top_middle.png"];
-     imageView_top_right.image =
-     [UIImage imageNamed:@"bubble_top_right.png"];
-     
-     imageView_middle_left.image =
-     [UIImage imageNamed:@"bubble_middle_left.png"];
-     imageView_middle_middle.image =
-     [UIImage imageNamed:@"bubble_middle_middle.png"];
-     imageView_middle_right.image =
-     [UIImage imageNamed:@"bubble_middle_right.png"];
-     
-     imageView_bottom_left.image =
-     [UIImage imageNamed:@"bubble_bottom_left.png"];
-     imageView_bottom_middle.image =
-     [UIImage imageNamed:@"bubble_bottom_middle.png"];
-     imageView_bottom_right.image =
-     [UIImage imageNamed:@"bubble_bottom_right.png"];
-     
-     } else {
-     //---reuse the old views---
-     dateLabel = (UILabel*)[cell.contentView viewWithTag: DATELABEL_TAG];
-     messageLabel = (UILabel*)[cell.contentView viewWithTag: MESSAGELABEL_TAG];
-     
-     imageView_top_left =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_1];
-     imageView_top_middle =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_2];
-     imageView_top_right =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_3];
-     
-     imageView_middle_left =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_4];
-     imageView_middle_middle =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_5];
-     imageView_middle_right =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_6];
-     
-     imageView_bottom_left =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_7];
-     imageView_bottom_middle =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_8];
-     imageView_bottom_right =
-     (UIImageView*)[cell.contentView viewWithTag: IMAGEVIEW_TAG_9];
-     }
-     
-     //---calculate the height for the label---
-     int labelHeight = [self labelHeight:[listOfMessages objectAtIndex:indexPath.row]];
-     labelHeight -= bubbleFragment_height;
-     if (labelHeight<0) labelHeight = 0;
-     
-     //---you can customize the look and feel for the date for each message here---
-     dateLabel.frame = CGRectMake(0.0, 0.0, 200, 15.0);
-     dateLabel.font = [UIFont boldSystemFontOfSize: FONTSIZE];
-     dateLabel.textAlignment = NSTextAlignmentLeft;
-     dateLabel.textColor = [UIColor darkGrayColor];
-     dateLabel.backgroundColor = [UIColor clearColor];
-     
-     //---top left---
-     imageView_top_left.frame =
-     CGRectMake(bubble_x, bubble_y, bubbleFragment_width, bubbleFragment_height);
-     //---top middle---
-     imageView_top_middle.frame =
-     CGRectMake(bubble_x + bubbleFragment_width, bubble_y,
-     bubbleFragment_width, bubbleFragment_height);
-     //---top right---
-     imageView_top_right.frame =
-     CGRectMake(bubble_x + (bubbleFragment_width * 2), bubble_y,
-     bubbleFragment_width, bubbleFragment_height);
-     //---middle left---
-     imageView_middle_left.frame =
-     CGRectMake(bubble_x, bubble_y + bubbleFragment_height,
-     bubbleFragment_width, labelHeight);
-     //---middle middle---
-     imageView_middle_middle.frame =
-     CGRectMake(bubble_x + bubbleFragment_width, bubble_y + bubbleFragment_height,
-     bubbleFragment_width, labelHeight);
-     //---middle right---
-     imageView_middle_right.frame =
-     CGRectMake(bubble_x + (bubbleFragment_width * 2),
-     bubble_y + bubbleFragment_height,
-     bubbleFragment_width, labelHeight);
-     //---bottom left---
-     imageView_bottom_left.frame =
-     CGRectMake(bubble_x, bubble_y + bubbleFragment_height + labelHeight,
-     bubbleFragment_width, bubbleFragment_height );
-     //---bottom middle---
-     imageView_bottom_middle.frame =
-     CGRectMake(bubble_x + bubbleFragment_width,
-     bubble_y + bubbleFragment_height + labelHeight,
-     bubbleFragment_width, bubbleFragment_height);
-     //---bottom right---
-     imageView_bottom_right.frame =
-     CGRectMake(bubble_x + (bubbleFragment_width * 2),
-     bubble_y + bubbleFragment_height + labelHeight,
-     bubbleFragment_width, bubbleFragment_height );
-     
-     //---you can customize the look and feel for each message here---
-     messageLabel.frame =
-     CGRectMake(bubble_x + 10, bubble_y + 5,
-     (bubbleFragment_width * 3) - 25,
-     (bubbleFragment_height * 2) + labelHeight - 10);
-     
-     messageLabel.font = [UIFont systemFontOfSize:FONTSIZE];
-     messageLabel.textAlignment = NSTextAlignmentCenter;
-     messageLabel.textColor = [UIColor darkTextColor];
-     messageLabel.numberOfLines = 0; //---display multiple lines---
-     messageLabel.backgroundColor = [UIColor clearColor];
-     messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-     
-     dateLabel.text = [dateOfMessages objectAtIndex:indexPath.row];
-     messageLabel.text = [listOfMessages objectAtIndex:indexPath.row];
-     //--------------
-     
-     cell.backgroundColor = [UIColor colorWithRed:219.0f/255.0f green:226.0f/255.0f blue:237.0f/255.0f alpha:1.0f];
-     
-     
-     return cell;*/
 }
 
 #pragma mark - UITableViewDelegate methods
@@ -425,49 +120,8 @@ int bubble_x, bubble_y;
 //---returns the height for the table view row---
 - (CGFloat)tableView:(UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    /*    if(indexPath.section == 0){
-     NSString *labelText = [NSString stringWithFormat:@"%@'s Shared\nConversation With %@", sharer, conversant];
-     return [self heightForText:labelText];
-     }
-     else if(indexPath.section == 1){*/
     CGSize messageSize = [PTSMessagingCell messageSize:[listOfMessages objectAtIndex:indexPath.row]];
     return messageSize.height + 2*[PTSMessagingCell textMarginVertical] + 40.0f;
-    /*    }
-     else{
-     NSString *labelText = [NSString stringWithFormat:@"%@'s Shared\nConversation With %@", sharer, conversant];
-     return [self heightForText:labelText];
-     }*/
-    
-    /*    NSString *message = [listOfMessages objectAtIndex:indexPath.row];
-     
-     CGSize size;
-     
-     NSString *avatar = nil;
-     
-     if(avatar)
-     {
-     size = [message sizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(self.tableView.frame.size.width - [self minInsetForCell:nil atIndexPath:indexPath] - STBubbleImageSize - 8.0f - STBubbleWidthOffset, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
-     }
-     else
-     {
-     size = [message sizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(self.tableView.frame.size.width - [self minInsetForCell:nil atIndexPath:indexPath] - STBubbleWidthOffset, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
-     }
-     
-     // This makes sure the cell is big enough to hold the avatar
-     if(size.height + 15.0f < STBubbleImageSize + 4.0f && avatar)
-     {
-     return STBubbleImageSize + 4.0f;
-     }
-     
-     return size.height + 15.0f;*/
-    
-    
-    /*    int labelHeight = [self labelHeight:[listOfMessages
-     objectAtIndex:indexPath.row]];
-     labelHeight -= bubbleFragment_height;
-     if (labelHeight<0) labelHeight = 0;
-     
-     return (bubble_y + bubbleFragment_height * 2 + labelHeight) + 5;*/
 }
 
 #pragma mark - STBubbleTableViewCellDataSource methods
@@ -630,16 +284,23 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return lblSectionName.frame.size.height;
 }
 
--(void)keyboardWillShow {
+-(void)updateSwipeGesture {
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeComment)];
+    [swipeGesture setDirection:UISwipeGestureRecognizerDirectionDown];
+    [[self commentView] addGestureRecognizer: swipeGesture];
+}
+
+-(void)keyboardWillShow:(NSNotification *)notification {
     // Animate the current view out of the way
+    NSLog(@"keyboardWillShow");
+    [self saveKeyboardHeight:notification];
+    
     keyboardTimes++;
     if (self.view.frame.origin.y >= 0)
     {
         if(keyboardTimes < 2){
             [self setViewMovedUp:YES];
-            UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeComment)];
-            [swipeGesture setDirection:UISwipeGestureRecognizerDirectionDown];
-            [[self commentView] addGestureRecognizer: swipeGesture];
+            [self updateSwipeGesture];
         }
         
     }
@@ -650,19 +311,68 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)swipeComment{
+    NSLog(@"resigning textfield");
     [commentTextField resignFirstResponder];
 }
 
 -(void)keyboardWillHide {
+    NSLog(@"keyboardWillHide");
+    keyboardHidden = YES;
+    
     keyboardTimes = 0;
-    if (self.view.frame.origin.y >= 0)
-    {
-        [self setViewMovedUp:NO];
+    [self setViewMovedUp:NO];
+}
+
+-(void)saveKeyboardHeight:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    
+    CGRect keyboardEndFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    if (CGRectIsNull(keyboardEndFrame)) {
+        return;
     }
-    else if (self.view.frame.origin.y < 0)
-    {
-        [self setViewMovedUp:NO];
+    
+    NSLog(@"Saving Rect Height: %f", keyboardEndFrame.size.height);
+    
+    kOFFSET_FOR_KEYBOARD = keyboardEndFrame.size.height;
+}
+
+-(void)keyboardDidChange:(NSNotification *)notification {
+    NSLog(@"keyboardDidChange");
+}
+
+-(void)keyboardDidShow:(NSNotification *)notification {
+    NSLog(@"keyboardDidShow");
+    keyboardHidden = NO;
+}
+
+-(void)keyboardWillChange:(NSNotification *)notification {
+    NSLog(@"keyboardWillChange");
+    if (keyboardHidden) {
+        return;
     }
+
+    NSDictionary *userInfo = [notification userInfo];
+    
+    CGRect keyboardEndFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    if (CGRectIsNull(keyboardEndFrame)) {
+        return;
+    }
+    
+    if (keyboardEndFrame.size.height > kOFFSET_FOR_KEYBOARD) {
+        NSLog(@"Growing Keyboard View");
+        [self saveKeyboardHeight:notification];
+        [self updateView];
+        [self updateSwipeGesture];
+    } else if (keyboardEndFrame.size.height < kOFFSET_FOR_KEYBOARD) {
+        NSLog(@"Shrinking Keyboard View");
+        [self saveKeyboardHeight:notification];
+        [self updateView];
+        [self updateSwipeGesture];
+    }
+    
+    
 }
 
 -(void)textFieldDidBeginEditing:(UITextField *)sender
@@ -677,55 +387,55 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     }
 }
 
+-(void)updateView {
+    CGRect frame = self.view.frame;
+    
+    CGRect commentViewFrame = self.commentView.frame;
+    commentViewFrame.origin.y = frame.size.height - commentViewFrame.size.height - kOFFSET_FOR_KEYBOARD;
+    
+    CGRect tableViewFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+    tableViewFrame.size.height = frame.size.height - commentViewFrame.size.height - kOFFSET_FOR_KEYBOARD;
+    
+    [UIView animateWithDuration:.3 animations:^{
+        self.tableView.frame = tableViewFrame;
+        self.commentView.frame = commentViewFrame;
+    }];
+    
+    int lastRowNumber = (int)[tableView numberOfRowsInSection:0] - 1;
+    NSIndexPath* ip = [NSIndexPath indexPathForRow:lastRowNumber inSection:0];
+    [tableView scrollToRowAtIndexPath:ip atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
 //method to move the view up/down whenever the keyboard is shown/dismissed
 -(void)setViewMovedUp:(BOOL)movedUp{
-//    [UIView beginAnimations:nil context:NULL];
-//        [UIView setAnimationDuration:0.3]; // if you want to slide up the view
     
-    //    CGRect rect = self.view.frame;
+    CGRect commentViewFrame = commentView.frame;
+    CGRect tableViewFrame = tableView.frame;
+    
     if (movedUp)
     {
-        // 1. move the view's origin up so that the text field that will be hidden come above the keyboard
-        // 2. increase the size of the view so that the area behind the keyboard is covered up.
-        //        rect.origin.y -= kOFFSET_FOR_KEYBOARD;
-        //        rect.size.height += kOFFSET_FOR_KEYBOARD;
-        CGRect frame = self.tableView.frame;
-        frame.size.height = frame.size.height - kOFFSET_FOR_KEYBOARD;
-        self.tableView.frame = frame;
         
-        CGRect frame2 = self.commentView.frame;
-        frame2.origin.y -= kOFFSET_FOR_KEYBOARD;
-        self.commentView.frame = frame2;
-        
-        [UIView animateWithDuration:.3 animations:^{
-            self.tableView.frame = frame;
-            self.commentView.frame = frame2;
-        }];
+        NSLog(@"Moving View Up");
+        commentViewFrame.origin.y = self.view.frame.size.height - commentViewFrame.size.height - kOFFSET_FOR_KEYBOARD;
+        tableViewFrame.size.height = self.view.frame.size.height - commentViewFrame.size.height - kOFFSET_FOR_KEYBOARD;
         
     }
     else
     {
-        // revert back to the normal state.
-        //        rect.origin.y += kOFFSET_FOR_KEYBOARD;
-        //        rect.size.height -= kOFFSET_FOR_KEYBOARD;
-        CGRect frame = tableView.frame;
-        frame.size.height = frame.size.height + kOFFSET_FOR_KEYBOARD;
-//        tableView.frame = frame;
+        NSLog(@"Moving View Down");
         
-        CGRect frame2 = commentView.frame;
-        frame2.origin.y += kOFFSET_FOR_KEYBOARD;
-//        commentView.frame = frame2;
+        commentViewFrame.origin.y = self.view.frame.size.height - commentViewFrame.size.height;
+        tableViewFrame.size.height = self.view.frame.size.height - commentViewFrame.size.height;
         
-        [UIView animateWithDuration:.3 animations:^{
-            self.tableView.frame = frame;
-            self.commentView.frame = frame2;
-        }];
     }
-    //    self.view.frame = rect;
     
-//    [UIView commitAnimations];
+    [UIView animateWithDuration:.3 animations:^{
+        self.tableView.frame = tableViewFrame;
+        self.commentView.frame = commentViewFrame;
+    }];
     
-    [tableView reloadData];
+    [tableView reloadData]; // Removing this seems to cause a bug where the keyboard autohides
+    
     int lastRowNumber = (int)[tableView numberOfRowsInSection:0] - 1;
     NSIndexPath* ip = [NSIndexPath indexPathForRow:lastRowNumber inSection:0];
     [tableView scrollToRowAtIndexPath:ip atScrollPosition:UITableViewScrollPositionTop animated:YES];
@@ -738,8 +448,23 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     keyboardTimes = 0;
     // register for keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow)
+                                             selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillChange:)
+                                                 name:UIKeyboardWillChangeFrameNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidChange:)
+                                                 name:UIKeyboardDidChangeFrameNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -759,6 +484,18 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardDidShowNotification
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillChangeFrameNotification
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardDidChangeFrameNotification
                                                   object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self

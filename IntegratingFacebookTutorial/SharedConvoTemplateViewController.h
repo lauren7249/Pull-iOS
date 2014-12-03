@@ -19,8 +19,6 @@
 @property (readwrite) NSString *conversant;
 @property (readwrite) NSString *conversantPhone;
 @property (readwrite) NSString *sharerPhone;
-@property (readwrite) float kOFFSET_FOR_KEYBOARD;
-@property (readwrite) int keyboardTimes;
 
 
 @end
