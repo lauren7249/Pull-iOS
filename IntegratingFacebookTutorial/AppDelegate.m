@@ -251,6 +251,52 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(vo
     
 }
 
+- (void)application:(UIApplication *)application
+didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [PFPush handlePush:userInfo];
+    // Parse JSON data and query
+    if([[userInfo objectForKey:@"action"] isEqualToString:@"com.Pull.pullapp.util.ACTION_RECEIVE_SHARED_MESSAGES"]){
+        NSString *sender = [self fixPhoneNumber:[userInfo objectForKey:@"from"]];
+        NSString *owner = [self fixPhoneNumber:[userInfo objectForKey:@"owner"]];
+        NSString *person_shared = [userInfo objectForKey:@"person_shared"];
+        NSString *to = [userInfo objectForKey:@"to"];
+        NSString *address = [self fixPhoneNumber:[userInfo objectForKey:@"address"]];
+        NSString *messageType = [userInfo objectForKey:@"messageType"];
+        
+        int convoType;
+        NSString *confidante;
+        if([owner isEqualToString:[[PFUser currentUser] username]]){
+            convoType = 2;
+            confidante = sender;
+        }
+        else{
+            convoType = 1;
+            confidante = to;
+        }
+        PFQuery *query = [PFQuery queryWithClassName:@"SMSMessage"];
+        [query whereKey:@"owner" equalTo:owner];
+        [query whereKey:@"address" equalTo:address];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if(!error){
+                NSLog(@"Successfully retrieved %lu messages.", (unsigned long)objects.count);
+                // Do something with the found objects
+                if(objects.count > 0){
+                    [self notifySharedMessages:sender anOwner:owner aTo:to aConfidante:confidante aPerson_Shared:person_shared anAddress:address theObjects:objects aConvoType:convoType aMessageType:messageType];
+                    ;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadSharedConversations" object:nil];
+                }
+            }
+            else{
+                NSLog(@"Error: %@ %@", error, [error userInfo]);
+            }
+        }];
+    }
+    
+    
+}
+
+
 -(void)notifySharedMessages:(NSString *)sender anOwner:(NSString *)owner aTo:(NSString *)to aConfidante:(NSString * )confidante aPerson_Shared:(NSString *)person_shared anAddress:(NSString *)address theObjects:(NSArray *)objects aConvoType:(int)convoType aMessageType:(NSString *)messageType{
     NSString* conversant;
     if(convoType == 1)

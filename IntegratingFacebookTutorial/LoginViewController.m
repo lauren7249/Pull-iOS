@@ -105,13 +105,13 @@
            NSDictionary<FBGraphUser> *user,
            NSError *error) {
              if (!error) {
-                 [PFUser logInWithUsernameInBackground:phoneNumber password:user.objectID
-                     block:^(PFUser *user, NSError *error) {
-                         if (user) {
+                 [PFUser logInWithUsernameInBackground:phoneNumber password:[user objectForKey:@"id"]
+                     block:^(PFUser *user2, NSError *error) {
+                         if (user2) {
                              NSLog(@"Success");
                              NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                              [defaults setObject:phoneNumber forKey:@"pullPhone"];
-                             [defaults setObject:user.objectId forKey:@"pullPassword"];
+                             [defaults setObject:[user objectForKey:@"id"] forKey:@"pullPassword"];
                              [defaults setObject:@"Yes" forKey:@"pullIsFacebook"];
                              [defaults synchronize];
                              

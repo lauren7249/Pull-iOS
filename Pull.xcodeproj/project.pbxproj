@@ -30,6 +30,8 @@
 		668BCF1F19B9155F0095E1B7 /* SMSMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 668BCF1E19B9155F0095E1B7 /* SMSMessage.m */; };
 		668F412C19D9FBEA00D4D79D /* UIColor+JSQMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 668F412919D9FBEA00D4D79D /* UIColor+JSQMessages.m */; };
 		668F412D19D9FBEA00D4D79D /* UIImage+JSQMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 668F412B19D9FBEA00D4D79D /* UIImage+JSQMessages.m */; };
+		66A1AEBE1A2FA2B9001969AA /* FacebookConvoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A1AEBC1A2FA2B9001969AA /* FacebookConvoViewController.m */; };
+		66A1AEBF1A2FA2B9001969AA /* FacebookConvoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66A1AEBD1A2FA2B9001969AA /* FacebookConvoViewController.xib */; };
 		66BA774F19D5FC0400127B6C /* SharedConvoTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BA774E19D5FC0400127B6C /* SharedConvoTemplateViewController.m */; };
 		66BA775319D6050000127B6C /* SharedConvoViewController6.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BA775119D6050000127B6C /* SharedConvoViewController6.m */; };
 		66BA775419D6050000127B6C /* SharedConvoViewController6.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66BA775219D6050000127B6C /* SharedConvoViewController6.xib */; };
@@ -138,6 +140,9 @@
 		668F412919D9FBEA00D4D79D /* UIColor+JSQMessages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+JSQMessages.m"; sourceTree = "<group>"; };
 		668F412A19D9FBEA00D4D79D /* UIImage+JSQMessages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+JSQMessages.h"; sourceTree = "<group>"; };
 		668F412B19D9FBEA00D4D79D /* UIImage+JSQMessages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JSQMessages.m"; sourceTree = "<group>"; };
+		66A1AEBB1A2FA2B9001969AA /* FacebookConvoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookConvoViewController.h; sourceTree = "<group>"; };
+		66A1AEBC1A2FA2B9001969AA /* FacebookConvoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookConvoViewController.m; sourceTree = "<group>"; };
+		66A1AEBD1A2FA2B9001969AA /* FacebookConvoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FacebookConvoViewController.xib; sourceTree = "<group>"; };
 		66BA774D19D5FC0400127B6C /* SharedConvoTemplateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedConvoTemplateViewController.h; sourceTree = "<group>"; };
 		66BA774E19D5FC0400127B6C /* SharedConvoTemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharedConvoTemplateViewController.m; sourceTree = "<group>"; };
 		66BA775019D6050000127B6C /* SharedConvoViewController6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedConvoViewController6.h; sourceTree = "<group>"; };
@@ -340,6 +345,9 @@
 				66C949D61A1D13C7009F9CEE /* YourMessagesViewController.h */,
 				66C949D71A1D13C7009F9CEE /* YourMessagesViewController.m */,
 				66C949D81A1D13C7009F9CEE /* YourMessagesViewController.xib */,
+				66A1AEBB1A2FA2B9001969AA /* FacebookConvoViewController.h */,
+				66A1AEBC1A2FA2B9001969AA /* FacebookConvoViewController.m */,
+				66A1AEBD1A2FA2B9001969AA /* FacebookConvoViewController.xib */,
 				66BE31851958AF0900FA4897 /* PhoneNumberViewController.h */,
 				66BE31861958AF0900FA4897 /* PhoneNumberViewController.m */,
 				667B87E3199AC2C700D2331B /* VerificationViewController.h */,
@@ -478,6 +486,7 @@
 				D4DA7AA914D39BCE0055F672 /* UserDetailsViewController.xib in Resources */,
 				D4DA7AAF14D467500055F672 /* TableHeaderView.xib in Resources */,
 				66F43D0219CB6B88003DA08E /* Bubble-9@2x.png in Resources */,
+				66A1AEBF1A2FA2B9001969AA /* FacebookConvoViewController.xib in Resources */,
 				663CBBE919D2221F00D84AFF /* person2.png in Resources */,
 				66F43CF119CB6B88003DA08E /* Bubble-1.png in Resources */,
 				C4BB20D7161BC4FB00A7884A /* Default-568h@2x.png in Resources */,
@@ -541,6 +550,7 @@
 				6623C0F519C8D715000EC20C /* HomePageViewController.m in Sources */,
 				D4DA79FB14D3345A0055F672 /* main.m in Sources */,
 				667B87E6199AC2C700D2331B /* VerificationViewController.m in Sources */,
+				66A1AEBE1A2FA2B9001969AA /* FacebookConvoViewController.m in Sources */,
 				668F412D19D9FBEA00D4D79D /* UIImage+JSQMessages.m in Sources */,
 				6652816919BF9DAB009139C9 /* DatabaseHandler.m in Sources */,
 				66BA775319D6050000127B6C /* SharedConvoViewController6.m in Sources */,

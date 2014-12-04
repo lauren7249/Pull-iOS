@@ -9,6 +9,8 @@
 #import "YourMessagesViewController.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "FacebookTableViewCell.h"
+#import "FacebookConvoViewController.h"
+
 
 @interface YourMessagesViewController ()
 
@@ -22,6 +24,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.title = @"Facebook Conversations";
+    facebookConversations = [self getOneOnOneConvos:facebookConversations];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -64,11 +68,21 @@
     }
     
     NSDictionary *currentConvo = [facebookConversations objectAtIndex:indexPath.row];
-    NSDictionary *people = [[currentConvo objectForKey:@"to"] objectForKey:@"data"];
     
-    NSLog(@"%lu", [people count]);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [defaults objectForKey:@"pullPassword"];
     
-    cell.textLabel.text = @"Test";
+    NSArray *people = [[currentConvo objectForKey:@"to"] objectForKey:@"data"];
+    NSDictionary *peopleDictionary = [people objectAtIndex:0];
+    
+    NSDictionary *messageInfo = [currentConvo objectForKey:@"comments"];
+    cell.messageInfo = messageInfo;
+    
+    if([userID isEqualToString:[peopleDictionary objectForKey:@"id"]]){
+        peopleDictionary = [people objectAtIndex:1];
+    }
+    
+    cell.textLabel.text = [peopleDictionary objectForKey:@"name"];
     
     return cell;
 }
@@ -78,7 +92,15 @@
 // In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    FacebookTableViewCell *cell = (FacebookTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+    
+    FacebookConvoViewController *fvc = [[FacebookConvoViewController alloc] initWithNibName:@"FacebookConvoViewController" bundle:nil];
+    fvc.messageInfo = cell.messageInfo;
+    NSArray *comments = [cell.messageInfo objectForKey:@"data"];
+    fvc.comments = comments;
+    fvc.conversant = cell.textLabel.text;
+    
+    [self.navigationController pushViewController:fvc animated:NO];
 }
 
 // Helper method to handle errors during API calls
@@ -129,6 +151,19 @@
         NSLog(@"Unexpected error posting to open graph: %@", error);
         alertTitle = @"Something went wrong";
     }
+}
+
+-(NSArray *)getOneOnOneConvos:(NSArray *)fc{
+    NSMutableArray *rma = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [fc count]; i++){
+        NSDictionary *currentConvo = [fc objectAtIndex:i];
+        NSDictionary *people = [[currentConvo objectForKey:@"to"] objectForKey:@"data"];
+        if([people count] == 2)
+            [rma addObject:currentConvo];
+    }
+    
+    NSArray *ra = [rma copy];
+    return ra;
 }
 
 
