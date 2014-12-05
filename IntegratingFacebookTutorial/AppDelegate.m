@@ -324,6 +324,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     [db close];
 }
 
+- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+    // check if you are in video page --> return landscape
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (NSString*)fixPhoneNumber:(NSString*)phoneNumber
 {
     if(phoneNumber == nil)
