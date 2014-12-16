@@ -65,6 +65,7 @@
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                 [defaults setObject:phoneNumber forKey:@"pullPhone"];
                 [defaults setObject:self.passwordTextField.text forKey:@"pullPassword"];
+                [defaults setObject:@"No" forKey:@"pullIsFacebook"];
                 [defaults synchronize];
                 
                 
@@ -116,7 +117,7 @@
                              [defaults synchronize];
                              
                              MyTabBar *mtb = [[MyTabBar alloc] init];
-                             [self.navigationController pushViewController:mtb animated:YES];
+                             [self.navigationController pushViewController:mtb animated:NO];
                          } else {
                              NSLog(@"Fail");
                          }
