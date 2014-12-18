@@ -45,6 +45,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     DatabaseHandler *db = [[DatabaseHandler alloc] initWithDBInfo];
+    [db updateSharedMessages];
     sharedConversations = [db getSharedConversations];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable:) name:@"reloadSharedConversations" object:nil];

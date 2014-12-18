@@ -208,6 +208,23 @@ NSString* const KEY_OWNER = @"owner";
     return sharedMessages;
 }
 
+-(void) updateSharedMessages{
+    PFQuery *query = [PFQuery queryWithClassName:@"SMSMessage"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            // The find succeeded.
+            NSLog(@"Successfully retrieved %lu messages.", objects.count);
+            // Do something with the found objects
+            for (PFObject *object in objects) {
+                NSLog(@"%@", object.objectId);
+            }
+        } else {
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+}
+
 
 
 -(BOOL)recordExistOrNot:(NSString *)query{

@@ -82,14 +82,21 @@
                              [appDelegate sessionStateChanged:session state:state error:error];
                          }];
                     }
+                
+                
+                    MyTabBar *mtb = [[MyTabBar alloc] init];
+                    self.window.rootViewController = mtb;
+                    self.window.backgroundColor = [UIColor whiteColor];
+                    [self.window makeKeyAndVisible];
+                }
+                else if([[defaults objectForKey:@"pullIsFacebook"] isEqual:@"No"]){
+                    HomePageViewController *viewController = [[HomePageViewController alloc] initWithNibName:@"HomePageViewController" bundle:nil];
+                    self.rootController = [[UINavigationController alloc] initWithRootViewController:viewController];
+                    self.window.rootViewController = self.rootController;
+                    self.window.backgroundColor = [UIColor whiteColor];
+                    [self.window makeKeyAndVisible];
 
                 }
-                
-                
-                MyTabBar *mtb = [[MyTabBar alloc] init];
-                self.window.rootViewController = mtb;
-                self.window.backgroundColor = [UIColor whiteColor];
-                [self.window makeKeyAndVisible];
                
             } else {
                 NSLog(@"Fail");

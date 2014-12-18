@@ -42,5 +42,6 @@ extern NSString* const KEY_OWNER;
 -(void)close;
 -(NSArray *) getSharedConversations;
 -(NSArray *) getSharedMessages:(NSString *)convoID;
+-(void) updateSharedMessages;
 
 @end
